@@ -38,7 +38,7 @@ int main(int argc, char** argv) {
 	string outName = "../resources/result.png";
 	string bunnyName = "../resources/bunny.obj";
 
-	int size = 512;
+	int size = 1024;
 	int width = size, height = size;
 	auto image = make_shared<Image>(width, height);
 
@@ -135,8 +135,8 @@ int main(int argc, char** argv) {
 		break;
 	case 9:
 		// lights
-		Ray::lights.push_back(make_shared<Light>(glm::vec3(0.5f, -0.5f, 2.5f), glm::vec3(0.75f)));
 		Ray::lights.push_back(make_shared<Light>(glm::vec3(-1.0f, 0.7f, 2.5f), glm::vec3(0.25f)));
+		Ray::lights.push_back(make_shared<Light>(glm::vec3(0.5f, -0.5f, 2.5f), glm::vec3(0.75f)));
 		// objects
 		// sphere
 		mat = Material({ 0.1f, 0.1f, 0.1f }, { 0.0f, 1.0f, 0.0f }, { 1.0f, 1.0f, 0.5f }, 100.0f);

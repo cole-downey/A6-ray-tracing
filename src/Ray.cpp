@@ -6,7 +6,7 @@
 using namespace std;
 using namespace glm;
 
-float Ray::self_t = 0.0001f;
+float Ray::self_t = 0.001f;
 vec3 Ray::camPos = vec3(0.0f);
 vector<shared_ptr<Light>> Ray::lights = vector<shared_ptr<Light>>();
 vector<shared_ptr<Object>> Ray::objects = vector<shared_ptr<Object>>();
