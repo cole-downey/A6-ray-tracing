@@ -6,7 +6,7 @@
 using namespace std;
 using namespace glm;
 
-float Ray::self_t = 0.001f;
+float Ray::self_t = 0.0001f;
 vec3 Ray::camPos = vec3(0.0f);
 vector<shared_ptr<Light>> Ray::lights = vector<shared_ptr<Light>>();
 vector<shared_ptr<Object>> Ray::objects = vector<shared_ptr<Object>>();
@@ -97,12 +97,12 @@ vec3 Ray::trace() {
     return vec3(1.0f);
 }
 
-bool Ray::lightBlocked(shared_ptr<Light> light, shared_ptr<intersect> hit) {
+bool Ray::lightBlocked(const shared_ptr<Light> light, const shared_ptr<intersect> hit) {
     p = hit->pos;
     v = light->pos - p;
     float t = length(v);
     v = normalize(v);
-    hit->pos += v * self_t;
+    p += v * self_t;
     auto x = intersectTest(hit, true);
     if (x == nullptr)
         return true;
@@ -120,7 +120,6 @@ vec3 Ray::blinnPhong(shared_ptr<intersect> hit) {
     vec3 eye = normalize(camPos - x);
     vec3 fragColor = obj->mat.ka;
 
-    lightBlocked(lights.at(0), hit);
     for (auto light : lights) {
         if (lightBlocked(light, hit)) {
             vec3 l = normalize(light->pos - x);

@@ -37,7 +37,7 @@ public:
     std::shared_ptr<intersect> intersectTest(std::shared_ptr<intersect> _self = nullptr, bool ignoreTrans = false);
     glm::vec3 trace();
     glm::vec3 blinnPhong(std::shared_ptr<intersect> hit);
-    bool lightBlocked(std::shared_ptr<Light> light, std::shared_ptr<intersect> hit);
+    bool lightBlocked(const std::shared_ptr<Light> light, const std::shared_ptr<intersect> hit);
 
 };
 
