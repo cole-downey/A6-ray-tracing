@@ -46,12 +46,12 @@ DWORD WINAPI rayThread(LPVOID lpParameter) {
 
 int main(int argc, char** argv) {
 	if (argc < 3) {
-		cout << "Usage: A6 <scene> <size> <output_name> <nthreads>(optional)" << endl;
+		cout << "Usage: A6 <scene> <size> <nthreads>(opt) <imageName>(opt)" << endl;
 		return 0;
 	}
 	string outName = "../results/result.png";
 	int nthreads = 0;
-	//if (argc > 3) outName = string(argv[3]);
+	if (argc > 4) outName = string(argv[4]);
 	if (argc > 3) nthreads = atoi(argv[3]);
 
 	//////////////////
