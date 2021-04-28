@@ -25,8 +25,8 @@
 using namespace std;
 
 int main(int argc, char** argv) {
-	if (argc < 2) {
-		cout << "Usage: A6 <scene>" << endl;
+	if (argc < 4) {
+		cout << "Usage: A6 <scene> <size> <output_name>" << endl;
 		return 0;
 	}
 	//string meshName(argv[1]);
@@ -35,10 +35,10 @@ int main(int argc, char** argv) {
 	// Main program // 
 	//////////////////
 
-	string outName = "../resources/result.png";
+	string outName = string(argv[3]);
 	string bunnyName = "../resources/bunny.obj";
 
-	int size = 1024;
+	int size = atoi(argv[2]);
 	int width = size, height = size;
 	auto image = make_shared<Image>(width, height);
 
@@ -73,7 +73,6 @@ int main(int argc, char** argv) {
 		// objects
 		mat = Material({ 0.1f, 0.1f, 0.1f }, { 1.0f, 0.0f, 0.0f }, { 1.0f, 1.0f, 0.5f }, 100.0f);
 		Ray::objects.push_back(make_shared<Ellipsoid>(glm::vec3(0.5f, 0.0f, 0.5f), glm::vec3(0.5f, 0.6f, 0.2f), glm::vec3(0.0f), mat));
-		Ray::objects.back()->shader = Object::TRANSPARENT;
 		mat = Material({ 0.1f, 0.1f, 0.1f }, { 0.0f, 1.0f, 0.0f }, { 1.0f, 1.0f, 0.5f }, 100.0f);
 		Ray::objects.push_back(make_shared<Ellipsoid>(glm::vec3(-0.5f, 0.0f, -0.5f), glm::vec3(1.0f), glm::vec3(0.0f), mat));
 		mat = Material({ 0.1f, 0.1f, 0.1f }, { 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 0.0f }, 0.0f);
@@ -134,6 +133,26 @@ int main(int argc, char** argv) {
 		Ray::objects.push_back(make_shared<Ellipsoid>(glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f), glm::vec3(0.0f), mat));
 		break;
 	case 9:
+		// lights
+		Ray::lights.push_back(make_shared<Light>(glm::vec3(-1.0f, 2.0f, 1.0f), glm::vec3(0.5f)));
+		Ray::lights.push_back(make_shared<Light>(glm::vec3(0.5f, -0.5f, 0.0f), glm::vec3(0.5f)));
+		// objects
+		mat = Material({ 0.1f, 0.1f, 0.1f }, { 1.0f, 0.0f, 0.0f }, { 1.0f, 1.0f, 0.5f }, 100.0f);
+		Ray::objects.push_back(make_shared<Ellipsoid>(glm::vec3(0.5f, -0.7f, 0.5f), glm::vec3(0.3f), glm::vec3(0.0f), mat));
+		mat = Material({ 0.1f, 0.1f, 0.1f }, { 0.0f, 0.0f, 1.0f }, { 1.0f, 1.0f, 0.5f }, 100.0f);
+		Ray::objects.push_back(make_shared<Ellipsoid>(glm::vec3(1.0f, -0.7f, 0.0f), glm::vec3(0.3f), glm::vec3(0.0f), mat));
+		mat = Material({ 0.1f, 0.1f, 0.1f }, { 1.0f, 0.0f, 0.0f }, { 1.0f, 1.0f, 0.5f }, 100.0f);
+		Ray::objects.push_back(make_shared<Ellipsoid>(glm::vec3(-0.5f, 0.0f, -0.5f), glm::vec3(1.0f), glm::vec3(0.0f), mat));
+		Ray::objects.back()->shader = Object::BLENDED;
+		mat = Material({ 0.1f, 0.1f, 0.1f }, { 0.0f, 0.0f, 1.0f }, { 1.0f, 1.0f, 0.5f }, 100.0f);
+		Ray::objects.push_back(make_shared<Ellipsoid>(glm::vec3(1.5f, 0.0f, -1.5f), glm::vec3(1.0f), glm::vec3(0.0f), mat));
+		Ray::objects.back()->shader = Object::BLENDED;
+		mat = Material({ 0.1f, 0.1f, 0.1f }, { 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 0.0f }, 0.0f);
+		Ray::objects.push_back(make_shared<Plane>(glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), mat));
+		mat = Material({ 0.1f, 0.1f, 0.1f }, { 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 0.0f }, 0.0f);
+		Ray::objects.push_back(make_shared<Plane>(glm::vec3(0.0f, 0.0f, -3.0f), glm::vec3(0.0f, 0.0f, 1.0f), mat));
+		break;
+	case 10:
 		// lights
 		Ray::lights.push_back(make_shared<Light>(glm::vec3(-1.0f, 0.7f, 2.5f), glm::vec3(0.25f)));
 		Ray::lights.push_back(make_shared<Light>(glm::vec3(0.5f, -0.5f, 2.5f), glm::vec3(0.75f)));

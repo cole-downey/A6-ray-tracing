@@ -19,6 +19,7 @@
 class Ray {
 private:
     static float self_t; // for self intersection tests
+    int recursionDepth;
 public:
     glm::vec3 p;
     glm::vec3 v;
@@ -34,9 +35,11 @@ public:
     Ray(glm::vec3 _p, glm::vec3 _v, int _pixX, int _pixY);
     ~Ray() {};
 
+    void setRecursionDepth(int d) { recursionDepth = d; };
     std::shared_ptr<intersect> intersectTest(std::shared_ptr<intersect> _self = nullptr, bool ignoreTrans = false);
     glm::vec3 trace();
     glm::vec3 blinnPhong(std::shared_ptr<intersect> hit);
+    glm::vec3 reflection(std::shared_ptr<intersect> hit);
     bool lightBlocked(const std::shared_ptr<Light> light, const std::shared_ptr<intersect> hit);
 
 };

@@ -12,15 +12,15 @@ vector<shared_ptr<Light>> Ray::lights = vector<shared_ptr<Light>>();
 vector<shared_ptr<Object>> Ray::objects = vector<shared_ptr<Object>>();
 
 Ray::Ray(glm::vec3 _p, glm::vec3 _v) :
-    p(_p), v(glm::normalize(_v)), pixX(0), pixY(0), self(nullptr) {
+    p(_p), v(glm::normalize(_v)), pixX(0), pixY(0), self(nullptr), recursionDepth(0) {
 };
 
 Ray::Ray(glm::vec3 _p, glm::vec3 _v, std::shared_ptr<intersect> _self) :
-    p(_p), v(glm::normalize(_v)), pixX(0), pixY(0), self(_self) {
+    p(_p), v(glm::normalize(_v)), pixX(0), pixY(0), self(_self), recursionDepth(0) {
 };
 
 Ray::Ray(glm::vec3 _p, glm::vec3 _v, int _pixX, int _pixY) :
-    p(_p), v(glm::normalize(_v)), pixX(_pixX), pixY(_pixY), self(nullptr) {
+    p(_p), v(glm::normalize(_v)), pixX(_pixX), pixY(_pixY), self(nullptr), recursionDepth(0) {
 };
 
 
@@ -70,16 +70,12 @@ vec3 Ray::trace() {
         break;
         case (Object::REFLECTIVE):
         {
-            vec3 childV = v - 2 * dot(v, hit->nor) * hit->nor;
-            auto childRay = Ray(hit->pos + self_t * childV, childV, hit);
-            return childRay.trace();
+            return reflection(hit);
         }
         break;
         case (Object::BLENDED):
         {
-            vec3 childV = v - 2 * dot(v, hit->nor) * hit->nor;
-            auto childRay = Ray(hit->pos + self_t * childV, childV, hit);
-            auto rfColor = childRay.trace();
+            auto rfColor = reflection(hit);
             auto bpColor = blinnPhong(hit);
             return rfColor * 0.3f + bpColor * 0.7f;
         }
@@ -139,5 +135,16 @@ vec3 Ray::blinnPhong(shared_ptr<intersect> hit) {
     fragColor.g = std::min(1.0f, fragColor.g);
     fragColor.b = std::min(1.0f, fragColor.b);
     return fragColor;
+}
+
+vec3 Ray::reflection(shared_ptr<intersect> hit) {
+    if (recursionDepth < 50) {
+        vec3 childV = v - 2 * dot(v, hit->nor) * hit->nor;
+        auto childRay = Ray(hit->pos + self_t * childV, childV, hit);
+        childRay.setRecursionDepth(recursionDepth + 1);
+        return childRay.trace();
+    } else {
+        return vec3(0.0f);
+    }
 }
 

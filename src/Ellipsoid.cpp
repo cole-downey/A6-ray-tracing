@@ -4,20 +4,6 @@ using namespace std;
 using namespace glm;
 
 void Ellipsoid::intersectTest(const vec3& p, const vec3& v, vector<intersect>& intersects) {
-    /*
-    float sphere_r = 1.0f;
-    auto sphere_p = vec3(0.0f);
-    float a = dot(v, v), b = 2 * dot(v, p), c = dot(p, p) - 1;
-    float d = pow(b, 2) - 4 * a * c; // discriminant
-    if (d > 0) { // two hits
-        float t = (-b + sqrt(d)) / (2 * a);
-        auto norm = p + t * v; // for unit sphere at origin, normal is same as position
-        intersects.push_back({ (float*)this, t, norm });
-        t = (-b - sqrt(d)) / (2 * a);
-        norm = p + t * v; // for unit sphere at origin, normal is same as position
-        intersects.push_back({ (float*)this, t, norm });
-    }
-    */
     // ellipsoid_E is transformation matrix from unit sphere to ellipse
     // transform rays into local space for ellipse
     vec3 rayPrime[2];
