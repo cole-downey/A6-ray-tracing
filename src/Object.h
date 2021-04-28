@@ -35,7 +35,7 @@ public:
         BLINN_PHONG = 0,
         REFLECTIVE,
         BLENDED,
-        TRANSPARENT,
+        TRANS,
     };
     int shader;
 

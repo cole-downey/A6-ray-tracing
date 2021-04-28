@@ -104,5 +104,5 @@ void Mesh::calcBounds() {
     farthestPoint = vec3(mesh_E * vec4(farthestPoint, 1.0f));
     float radius = length(meanPos - farthestPoint);
     bounds = new Ellipsoid(meanPos, vec3(radius), vec3(0.0f), Material());
-    bounds->shader = TRANSPARENT;
+    bounds->shader = TRANS;
 }

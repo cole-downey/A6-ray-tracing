@@ -32,7 +32,7 @@ shared_ptr<intersect> Ray::intersectTest(shared_ptr<intersect> _self, bool ignor
     }
     if (ignoreTrans) {
         for (int i = 0; i < intersects.size(); i++) {
-            if (((Object*)intersects.at(i).obj)->shader == Object::TRANSPARENT) {
+            if (((Object*)intersects.at(i).obj)->shader == Object::TRANS) {
                 intersects.erase(intersects.begin() + i);
             }
         }
@@ -80,7 +80,7 @@ vec3 Ray::trace() {
             return rfColor * 0.3f + bpColor * 0.7f;
         }
         break;
-        case (Object::TRANSPARENT):
+        case (Object::TRANS):
         {
             auto childRay = Ray(hit->pos + self_t * v, v, hit);
             auto tpColor = childRay.trace();

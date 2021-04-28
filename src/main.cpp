@@ -1,10 +1,14 @@
 #include <iostream>
+#include <iomanip>
 #include <string>
 #include <memory>
 
 #define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <windows.h>
+#include <time.h>
+#include <chrono>
 
 #include "Ray.h"
 #include "Camera.h"
@@ -24,23 +28,41 @@
 // You should never do this in a header file.
 using namespace std;
 
+shared_ptr<vector<Ray>> rays;
+shared_ptr<Image> image;
+
+struct rayThreadArgs {
+	int startRay;
+	int endRay;
+};
+DWORD WINAPI rayThread(LPVOID lpParameter) {
+	auto args = *(rayThreadArgs*)lpParameter;
+	delete lpParameter;
+	for (int i = args.startRay; i < args.endRay; i++) {
+		image->setPixel(rays->at(i).pixX, rays->at(i).pixY, rays->at(i).trace());
+	}
+	return 0;
+};
+
 int main(int argc, char** argv) {
-	if (argc < 4) {
-		cout << "Usage: A6 <scene> <size> <output_name>" << endl;
+	if (argc < 3) {
+		cout << "Usage: A6 <scene> <size> <output_name> <nthreads>(optional)" << endl;
 		return 0;
 	}
-	//string meshName(argv[1]);
+	string outName = "../results/result.png";
+	int nthreads = 0;
+	//if (argc > 3) outName = string(argv[3]);
+	if (argc > 3) nthreads = atoi(argv[3]);
 
 	//////////////////
 	// Main program // 
 	//////////////////
 
-	string outName = string(argv[3]);
 	string bunnyName = "../resources/bunny.obj";
 
 	int size = atoi(argv[2]);
 	int width = size, height = size;
-	auto image = make_shared<Image>(width, height);
+	image = make_shared<Image>(width, height);
 
 	auto camera = Camera();
 	auto mat = Material();
@@ -177,15 +199,46 @@ int main(int argc, char** argv) {
 	}
 
 	// generate rays
-	auto rays = make_shared<vector<Ray>>();
+	rays = make_shared<vector<Ray>>();
 	camera.makeRays(width, height, rays);
-	cout << "Ray creation done" << endl;
+	cout << "Ray creation done." << endl;
+
+	// start timer
+	auto t_start = chrono::high_resolution_clock::now();
 
 	// Trace each ray
-	for (auto ray : *rays) {
-		image->setPixel(ray.pixX, ray.pixY, ray.trace());
+	if (nthreads > 1) {
+		int nrays = (int)rays->size();
+		auto threads = make_shared<vector<HANDLE>>();
+		int pixPerThread = nrays / nthreads;
+		for (int i = 0; i < nrays; i += pixPerThread) {
+			int start = i, stop = i + pixPerThread;
+			if (stop > nrays) stop = nrays;
+			auto args = new rayThreadArgs{
+				start,
+				stop,
+			};
+			threads->push_back(CreateThread(0, 0, rayThread, args, 0, 0));
+		}
+		cout << "Ray threads started..." << endl;
+		for (auto thread : *threads) {
+			WaitForSingleObject(thread, INFINITE);
+			CloseHandle(thread);
+		}
+	} else {
+		for (auto ray : *rays) {
+			image->setPixel(ray.pixX, ray.pixY, ray.trace());
+		}
 	}
-	cout << "Ray tracing done" << endl;
+
+	// stop timer
+	auto t_end = chrono::high_resolution_clock::now();
+	cout << "Ray tracing done." << endl;
+	double timediff = chrono::duration<double, std::milli>(t_end - t_start).count();
+	cout << "Time elapsed: ";
+	cout << setfill('0') << setw(2) << ((int)timediff / (1000 * 60 * 60)) % 60 << ":" << setw(2) << ((int)timediff / (1000 * 60)) % 60 << ":";
+	cout << setw(2) << ((int)timediff / (1000)) % 60 << ".";
+	cout << setw(2) << (int)(timediff / 10) % 100 << endl;
 
 	// Write image to file
 	image->writeToFile(outName);
