@@ -3,6 +3,8 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 # Name of the project
 PROJECT(A6)
 
+# To run A6.sln in command line: MSBuild A6.sln -p:Configuration=Release
+
 # Use glob to get the list of all source files.
 FILE(GLOB_RECURSE SOURCES "src/*.cpp")
 

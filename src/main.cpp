@@ -22,6 +22,7 @@
 #include "Mesh.h"
 
 #include "Image.h"
+#include "Timer.h"
 
 // This allows you to skip the `std::` in front of C++ standard library
 // functions. You can also say `using std::cout` to be more selective.
@@ -204,7 +205,8 @@ int main(int argc, char** argv) {
 	cout << "Ray creation done." << endl;
 
 	// start timer
-	auto t_start = chrono::high_resolution_clock::now();
+	auto timer = Timer();
+	timer.start();
 
 	// Trace each ray
 	if (nthreads > 1) {
@@ -232,13 +234,9 @@ int main(int argc, char** argv) {
 	}
 
 	// stop timer
-	auto t_end = chrono::high_resolution_clock::now();
+	timer.stop();
 	cout << "Ray tracing done." << endl;
-	double timediff = chrono::duration<double, std::milli>(t_end - t_start).count();
-	cout << "Time elapsed: ";
-	cout << setfill('0') << setw(2) << ((int)timediff / (1000 * 60 * 60)) % 60 << ":" << setw(2) << ((int)timediff / (1000 * 60)) % 60 << ":";
-	cout << setw(2) << ((int)timediff / (1000)) % 60 << ".";
-	cout << setw(2) << (int)(timediff / 10) % 100 << endl;
+	timer.printTime();
 
 	// Write image to file
 	image->writeToFile(outName);
