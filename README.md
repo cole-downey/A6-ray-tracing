@@ -1,2 +1,2 @@
-# OpenGL A2 - Hierarchical Transforms
-In this project, I created a hierarchical robot figure with components that respond to keyboard inputs to change their rotations
+# OpenGL A6 - Ray tracing
+In this project, I created a ray tracer that takes objects, lights, and a camera as input, generates a ray vector for every pixel, then traces each ray to get its color. This project supports blinn-phong, reflective, and transparent shading, as well as mathematically defined objects such as spheres and planes, and objects defined from an .obj file. Written in C++.
