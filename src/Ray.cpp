@@ -113,7 +113,7 @@ vec3 Ray::blinnPhong(shared_ptr<intersect> hit) {
     auto x = hit->pos;
     auto n = hit->nor;
 
-    vec3 eye = normalize(camPos - x);
+    vec3 eye = normalize(p - x);
     vec3 fragColor = obj->mat.ka;
 
     for (auto light : lights) {
